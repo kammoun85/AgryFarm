@@ -1,0 +1,6 @@
+{
+  "name": "AgryTND - Smart Farm & Financial Tracker",
+  "description": "Smart farm inventory & financial management platform in Tunisia for sheep livestock and egg produce tracking, client debt ledgers, financial records, and PDF/Excel reporting in TND.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

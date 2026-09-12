@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "FarmConfig": {
+      "title": "Farm Configuration",
+      "description": "Global farm configuration and owner settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "farmOwnerName": { "type": "string", "maxLength": 100 },
+        "farmLocation": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "language": { "type": "string", "enum": ["en", "fr", "ar"] },
+        "eggInStock": { "type": "number" },
+        "defaultPricePerEggTND": { "type": "number" },
+        "defaultPricePerTrayTND": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["farmOwnerName", "eggInStock"]
+    },
+    "Sheep": {
+      "title": "Sheep Livestock Record",
+      "description": "Sheep herd inventory record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tagNumber": { "type": "string", "maxLength": 50 },
+        "breed": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["ewe", "ram", "lamb"] },
+        "status": { "type": "string", "enum": ["active", "sold", "deceased", "medical"] },
+        "acquisitionDate": { "type": "string", "maxLength": 20 },
+        "weightKg": { "type": "number" },
+        "healthNotes": { "type": "string", "maxLength": 500 },
+        "acquisitionCostTND": { "type": "number" },
+        "salePriceTND": { "type": "number" },
+        "soldDate": { "type": "string", "maxLength": 20 },
+        "soldToClientId": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["tagNumber", "breed", "type", "status", "weightKg", "acquisitionCostTND"]
+    },
+    "EggHarvest": {
+      "title": "Egg Harvest Record",
+      "description": "Daily egg production and collection record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "maxLength": 20 },
+        "quantity": { "type": "number" },
+        "brokenCount": { "type": "number" },
+        "notes": { "type": "string", "maxLength": 500 },
+        "unitCostTND": { "type": "number" }
+      },
+      "required": ["date", "quantity", "brokenCount"]
+    },
+    "Client": {
+      "title": "Client Record",
+      "description": "Client profile and debt balance",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "address": { "type": "string", "maxLength": 200 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "totalDebtTND": { "type": "number" },
+        "createdAt": { "type": "string", "maxLength": 30 }
+      },
+      "required": ["name", "phone", "totalDebtTND"]
+    },
+    "Order": {
+      "title": "Sales Order",
+      "description": "Customer order with line items, payments and debt",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "orderNumber": { "type": "string", "maxLength": 50 },
+        "clientId": { "type": "string", "maxLength": 100 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 20 },
+        "totalAmountTND": { "type": "number" },
+        "paidAmountTND": { "type": "number" },
+        "debtAmountTND": { "type": "number" },
+        "status": { "type": "string", "enum": ["paid", "partial", "unpaid"] },
+        "notes": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["orderNumber", "clientId", "clientName", "date", "totalAmountTND", "status"]
+    },
+    "Expense": {
+      "title": "Farm Expense",
+      "description": "Operational expense for feeds, vet, labor, utilities",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string", "maxLength": 20 },
+        "category": { "type": "string", "maxLength": 50 },
+        "amountTND": { "type": "number" },
+        "description": { "type": "string", "maxLength": 500 },
+        "receiptNumber": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["date", "category", "amountTND", "description"]
+    },
+    "Payment": {
+      "title": "Client Debt Settlement Payment",
+      "description": "Record of payments received to pay down customer debt",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string", "maxLength": 100 },
+        "clientName": { "type": "string", "maxLength": 100 },
+        "date": { "type": "string", "maxLength": 20 },
+        "amountTND": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["cash", "check", "bank_transfer"] },
+        "notes": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["clientId", "clientName", "date", "amountTND", "paymentMethod"]
+    }
+  },
+  "firestore": {
+    "/farms/{farmId}": {
+      "schema": { "$ref": "#/entities/FarmConfig" },
+      "description": "Global farm configuration and stock totals"
+    },
+    "/farms/{farmId}/sheep/{sheepId}": {
+      "schema": { "$ref": "#/entities/Sheep" },
+      "description": "Sheep herd records"
+    },
+    "/farms/{farmId}/harvests/{harvestId}": {
+      "schema": { "$ref": "#/entities/EggHarvest" },
+      "description": "Egg harvest records"
+    },
+    "/farms/{farmId}/clients/{clientId}": {
+      "schema": { "$ref": "#/entities/Client" },
+      "description": "Client directory and debt balances"
+    },
+    "/farms/{farmId}/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Sales orders and invoices"
+    },
+    "/farms/{farmId}/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/Expense" },
+      "description": "Farm operating expenses"
+    },
+    "/farms/{farmId}/payments/{paymentId}": {
+      "schema": { "$ref": "#/entities/Payment" },
+      "description": "Client debt payment history"
+    }
+  }
+}
